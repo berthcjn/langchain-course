@@ -209,23 +209,51 @@ second_prompt = ChatPromptTemplate.from_messages([
     second_user_prompt
 ])
 
-third_user_prompt = HumanMessagePromptTemplate.from_template("""
+third_user_prompt = HumanMessagePromptTemplate.from_template(
+    """
 You are tasked with creating a new paragraph for the article.
 The article is here for you to examine {article}
 Follow these steps carefully but dont put the steps in the final output:
 
-Find 5 key areas the article does not talk about.
+Find 1 key area the article does not talk about.
 Compare each key area and decide which is most related to the subject of the context.
 Generate a new paragraph of the most related key area in the same style as the context.
 
-Format the output as
+Format the output generated as
+
 Article Paragraph: ...
 
-No other explanation or text can be provided
-""")
+Only provide the context of the Article Paragraph, no other explanation or text can be provided
+
+""",
+    input_variables=["article"]
+)
 
 # prompt template 3: creating a new paragraph for the article
 third_prompt = ChatPromptTemplate.from_messages([
     system_prompt,
     third_user_prompt
+])
+
+fourth_user_prompt = HumanMessagePromptTemplate.from_template(
+    """
+You are tasked with adding a new paragraph for the article.
+
+The article is here for you to examine {article}
+The new paragraph is also here for you to examine {article_para}
+
+Find the line the article paragraph should come after and discuss why is should be placed there.
+
+Format the output generated as
+
+Article Paragraph Line: ...
+
+Only provide the context of the Article Paragraph Line, no other explanation or text can be provided
+""",
+    input_variables=["article", "article_para"]
+)
+
+fourth_prompt = ChatPromptTemplate.from_messages([
+    system_prompt,
+    fourth_user_prompt
 ])

@@ -1,7 +1,7 @@
 from langchain.chains.llm import LLMChain
 from langchain_ollama.chat_models import ChatOllama
 
-from practice.prompt import first_prompt, article, second_prompt, third_prompt
+from practice.prompt import first_prompt, article, second_prompt, third_prompt, fourth_prompt
 
 model_name = "llama3.2:1b-instruct-fp16"
 
@@ -20,6 +20,7 @@ chain_one = LLMChain(
 output_one = chain_one.invoke({"article": article})
 article_title = output_one["article_title"]
 print("Article Title:", article_title)
+print('-' * 100)
 
 chain_two = LLMChain(
     llm=llm,  # we use the more deterministic LLM here
@@ -30,6 +31,7 @@ chain_two = LLMChain(
 output_two = chain_two.invoke({"article": article, "article_title": article_title})
 summary = output_two["summary"]
 print(summary)
+print('-' * 100)
 
 chain_three = LLMChain(
     llm=creative_llm,
@@ -37,5 +39,15 @@ chain_three = LLMChain(
     output_key="article_para"
 )
 output_three = chain_three.invoke({"article": article})
-new_para = output_three["article_para"]
-print(new_para)
+article_para = output_three["article_para"]
+print(article_para)
+print('-' * 100)
+
+chain_four = LLMChain(
+    llm=llm,  # we need precision here so we use the more deterministic LLM
+    prompt=fourth_prompt,
+    output_key="new_suggestion_article"
+)
+output_four = chain_four.invoke({"article": article, "article_para": article_para})
+print(output_four["new_suggestion_article"])
+print('-' * 100)
