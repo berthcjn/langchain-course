@@ -1,20 +1,4 @@
-import os
-from getpass import getpass
-
 from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
-from langchain_openai import ChatOpenAI
-
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY") or getpass(
-    "Enter OpenAI API Key: "
-)
-
-openai_model = "gpt-4o-mini"
-
-# For normal accurate responses
-llm = ChatOpenAI(temperature=0.0, model=openai_model)
-
-# For unique creative responses
-creative_llm = ChatOpenAI(temperature=0.9, model=openai_model)
 
 article = """
 \
@@ -204,4 +188,44 @@ text can be provided.""",
 
 first_prompt = ChatPromptTemplate.from_messages([system_prompt, user_prompt])
 
-print(first_prompt.format(article="TEST STRING"))
+second_user_prompt = HumanMessagePromptTemplate.from_template(
+    """You are tasked with creating a description for the article.
+The article is here for you to examine {article}
+Here is the name of the article {article_title}
+Follow these steps carefully but dont put the steps in the final output:
+
+Step 1:
+Summarise the content of the article.
+The description should be 1 sentence long. Format the output the summary generated as
+Article Summary: ...
+
+
+""",
+    input_variables=["article", "article_title"]
+)
+
+second_prompt = ChatPromptTemplate.from_messages([
+    system_prompt,
+    second_user_prompt
+])
+
+third_user_prompt = HumanMessagePromptTemplate.from_template("""
+You are tasked with creating a new paragraph for the article.
+The article is here for you to examine {article}
+Follow these steps carefully but dont put the steps in the final output:
+
+Find 5 key areas the article does not talk about.
+Compare each key area and decide which is most related to the subject of the context.
+Generate a new paragraph of the most related key area in the same style as the context.
+
+Format the output as
+Article Paragraph: ...
+
+No other explanation or text can be provided
+""")
+
+# prompt template 3: creating a new paragraph for the article
+third_prompt = ChatPromptTemplate.from_messages([
+    system_prompt,
+    third_user_prompt
+])
