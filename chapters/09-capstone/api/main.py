@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
+
 # streaming function
 async def token_generator(content: str, streamer: QueueCallbackHandler):
     task = asyncio.create_task(agent_executor.invoke(
@@ -40,6 +41,7 @@ async def token_generator(content: str, streamer: QueueCallbackHandler):
             print(f"Error streaming token: {e}")
             continue
     await task
+
 
 # invoke function
 @app.post("/invoke")
