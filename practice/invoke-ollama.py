@@ -1,7 +1,8 @@
 from langchain.chains.llm import LLMChain
+from langchain.chains.sequential import SequentialChain
 from langchain_ollama.chat_models import ChatOllama
 
-from practice.prompt import first_prompt, article, second_prompt, third_prompt, fourth_prompt
+from practice.prompt import first_prompt, article, second_prompt, third_prompt, fourth_prompt, image_prompt
 
 model_name = "llama3.2:1b-instruct-fp16"
 
@@ -51,3 +52,16 @@ chain_four = LLMChain(
 output_four = chain_four.invoke({"article": article, "article_para": article_para})
 print(output_four["new_suggestion_article"])
 print('-' * 100)
+
+chain_five = LLMChain(llm=llm, prompt=image_prompt, output_key="article_image")
+
+article_chain = SequentialChain(
+    chains=[chain_one, chain_two, chain_three, chain_four, chain_five],  # our linked chains
+    input_variables=["article"],  # the single input variable (used by our first chain)
+    output_variables=["article_title", "summary", "article_para", "new_suggestion_article", "article_image"],
+    # all of the outputs we want to return
+    verbose=True  # to show AI intermediate steps
+)
+
+result = article_chain.invoke({"article": article})
+print(result)

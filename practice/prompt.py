@@ -1,4 +1,5 @@
-from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate
+from langchain_core.prompts import SystemMessagePromptTemplate, HumanMessagePromptTemplate, ChatPromptTemplate, \
+    PromptTemplate
 
 article = """
 \
@@ -257,3 +258,9 @@ fourth_prompt = ChatPromptTemplate.from_messages([
     system_prompt,
     fourth_user_prompt
 ])
+
+image_prompt = PromptTemplate(
+    input_variables=["article"],
+    template="Generate a prompt with less then 500 letters to generate an image "
+             "based on the following article: {article}",
+)
