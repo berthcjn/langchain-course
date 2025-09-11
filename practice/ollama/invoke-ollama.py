@@ -1,8 +1,12 @@
+import os
+
 from langchain.chains.llm import LLMChain
 from langchain.chains.sequential import SequentialChain
 from langchain_ollama.chat_models import ChatOllama
 
 from practice.prompt import first_prompt, article, second_prompt, third_prompt, fourth_prompt, image_prompt
+
+os.environ["LANGCHAIN_PROJECT"] = "langchain-test-langsmith-ollama"
 
 model_name = "llama3.2:1b-instruct-fp16"
 
